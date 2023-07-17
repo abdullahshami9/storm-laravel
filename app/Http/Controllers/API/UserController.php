@@ -16,18 +16,21 @@ class UserController extends Controller
      */
     public function loginUser(Request $request)
     {
-      if(Auth::guard('api')->check()){
+      dd(123);
+      
 
-        $input = $request->all();
-        Auth::attempt($input);
-        $user = Auth::user();
+        $credentials = $request->only('email', 'password');
 
-        $token = $user->createToken('example')->accessToken;
-        return Response(['status' => 200,'token' => $token],200);
-      }
-      else{
-        return Response(['status' => 201,'message'=>'User does not exist','data' => 'Invalid Parameter']);
-      }
+        if (auth()->attempt($credentials)) {
+            dd($request->email);
+            $user = auth()->user();
+            $token = $user->createToken('example')->accessToken;
+
+            return response()->json(['token' => $token], 200);
+        }
+
+        return response()->json(['message' => 'Unauthorized'], 401);
+      
     }
 
     /**
@@ -48,7 +51,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function userLogout()
+    public function userLogout(Request $request)
     {
       if (Auth::guard('api')->check()) {
 
@@ -65,6 +68,7 @@ class UserController extends Controller
         ],401);
       }
 
+      
     }
 
 
