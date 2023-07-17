@@ -16,13 +16,17 @@ class UserController extends Controller
      */
     public function loginUser(Request $request)
     {
-      dd(123);
       
 
         $credentials = $request->only('email', 'password');
 
+        if($request->email == '' && empty($request->email) && !isset($request->email)){
+          return response()->json(['message' => 'UserName is required'],201);
+        }
+        if($request->password == '' && empty($request->password) && !isset($request->password)){
+          return response()->json(['message' => 'Password is required'],201);
+        }
         if (auth()->attempt($credentials)) {
-            dd($request->email);
             $user = auth()->user();
             $token = $user->createToken('example')->accessToken;
 
