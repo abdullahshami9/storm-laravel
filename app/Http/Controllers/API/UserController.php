@@ -26,6 +26,7 @@ class UserController extends Controller
         if($request->password == '' && empty($request->password) && !isset($request->password)){
           return response()->json(['message' => 'Password is required'],201);
         }
+        
         if (auth()->attempt($credentials)) {
             $user = auth()->user();
             $token = $user->createToken('example')->accessToken;
