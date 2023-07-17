@@ -16,6 +16,7 @@ class UserController extends Controller
      */
     public function loginUser(Request $request)
     {
+      dd(123);
       
 
         $credentials = $request->only('email', 'password');
@@ -28,6 +29,7 @@ class UserController extends Controller
         }
         
         if (auth()->attempt($credentials)) {
+            dd($request->email);
             $user = auth()->user();
             $token = $user->createToken('example')->accessToken;
 
@@ -76,5 +78,62 @@ class UserController extends Controller
       
     }
 
+    public function getCaptchaValues(){
+      $values = array('apple', 'strawberry', 'lemon', 'cherry', 'pear');
+      $reqId = uniqid();
+      $imageExt = 'jpg';
+      $imagePath = 'public/captcha/imgs/s3icons/fruit/';
+      $imageW = '50';
+      $imageH = '52';
+      $rand = mt_rand(0, (sizeof($values) - 1));
+      shuffle($values);
+
+      $s3Capcha = '<p id="verficationMsg">Verify that you are human, please choose <strong>' . $values[$rand] . "</strong></p>\n";
+      $s3Capcha .= '<div id="captchaDiv">';
+      for ($i = 0; $i < sizeof($values); $i++) {
+          $value2[$i] = mt_rand();
+          //$s3Capcha.= '<div><span>' . $values[$i] . ' <input type="radio" name="s3capcha" id="s3capcha" value="' . $value2[$i] . '"><input type="hidden" name="s3capchakey" id="s3capchakey" value="' . $reqId . '"></span><div style="background: url(' . $imagePath . $values[$i] . '.' . $imageExt . ') bottom left no-repeat; width:' . $imageW . 'px; height:' . $imageH . 'px;cursor:pointer;display:none;" class="img" /></div></div>' . "\n";
+          $s3Capcha .= '<div><span>' . $values[$i] . ' <input type="radio" name="s3capcha" id="s3capcha" value="' . $value2[$i] . '"></span><div style="background: url(' . $imagePath . $values[$i] . '.' . $imageExt . ') bottom left no-repeat; width:' . $imageW . 'px; height:' . $imageH . 'px;cursor:pointer;display:none;" class="img" /></div></div>' . "\n";
+      }
+      $s3Capcha .= "</div>";
+      $req_rand = mt_rand();
+
+      $s3Capcha .= '<input type="hidden" name="s3capchakey" id="s3capchakey" value="' . $reqId . $req_rand . '">';
+      // $this->addCaptcha($reqId . $req_rand, $value2[$rand]);
+      session()->put('s3capcha',  $value2[$rand]);
+      // $_SESSION['s3capcha'] =
+      echo $s3Capcha;
+    }
+
+    function addCaptcha($reqId, $captchaValue)
+    {
+
+        // global $activitylog;
+
+        $reCpatcha = '';
+        $sessionCpatcha = '';
+        $type = '';
+        $userId = '';
+
+        // $requester_ip = $activitylog->visitorIP();
+
+
+
+
+        $table_name = 'captcha_verification';
+
+
+        //$sql = "INSERT INTO `$table_name`(dateTime, requester_ip, session_captcha, request_captcha,type,userId, success) VALUES(NOW(), '$requester_ip','$sessionCpatcha', '$reCpatcha', '$type', '$userId',$success)";
+
+        // $this->db->adv($sql);
+        // $data = array(
+        //     "dateTime" => $this->advDB->now(),
+        //     "request_id" => $reqId,
+        //     "captcha_value" => $captchaValue,
+        //     'requester_ip' => $requester_ip
+        // );
+
+        // $id = $this->advDB->insert($table_name, $data);
+    }
 
 }

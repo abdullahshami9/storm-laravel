@@ -27,5 +27,6 @@ Route::controller(UserController::class)->group(function(){
   Route::post('login','loginUser')-> name('student_details');  
   Route::get('user','getUserDetail');
   Route::get('logout','userLogout');
+  Route::get('getCaptcha','getCaptchaValues');
 
 })->middleware('auth:api');
